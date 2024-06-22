@@ -9,7 +9,7 @@ function PrimaryBtn({
 }) {
   return (
         <button 
-        className={`bg-secondary rounded-full text-xl font-medium ${className}`}
+        className={`bg-secondary border-primary border-2 rounded-full text-xl font-medium ${className}`}
         {...props}>
         {!isLoading && value}
         {isLoading && <Loader/>}
