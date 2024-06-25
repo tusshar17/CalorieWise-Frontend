@@ -33,10 +33,22 @@ export const goalApi = createApi({
                 }
             }
         }),
+
+        getGoal: builder.query({
+            query: () => 'goal',
+            async onQueryStarted(arg, {dispatch, queryFulfilled}) {
+                try {
+                    const {data, meta} = await queryFulfilled;
+                    console.log("--xyz--", meta);
+                } catch (err) {
+                    console.log(err);
+                }
+            }
+        })
         
     })
 })
 
 
 
-export const { useCreateGoalMutation } = goalApi
+export const { useCreateGoalMutation, useGetGoalQuery } = goalApi

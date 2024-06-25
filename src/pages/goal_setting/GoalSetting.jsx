@@ -4,6 +4,9 @@ import Input from '../../components/Input'
 import logoImage from '../../assets/images/food-macro-icon.png'
 import PrimaryBtn from '../../components/PrimaryBtn'
 import {useCreateGoalMutation} from "../../services/goalService"
+import { useDispatch } from 'react-redux'
+import { setGoal } from '../../features/goalSlice'
+import { useNavigate } from 'react-router-dom'
 
 const validateValue = (val) => {
     const num = Number(val)
@@ -12,6 +15,8 @@ const validateValue = (val) => {
 
 function GoalSetting() {
 
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
 
     const [age, setAge] = useState('')
     const [validAge, setValidAge] = useState(false)
@@ -33,7 +38,7 @@ function GoalSetting() {
 
     const [weeklyGoal, setWeeklyGoal] = useState()
 
-    const [gender, setGender] = useState('')
+    const [gender, setGender] = useState(0)
 
     const [errMsg, setErrMsg] = useState('')
 
@@ -56,7 +61,7 @@ function GoalSetting() {
 
 
     // handle submit
-    const [setGoal, {isLoading}] = useCreateGoalMutation()
+    const [createGoal, {isLoading}] = useCreateGoalMutation()
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -82,7 +87,8 @@ function GoalSetting() {
 
         try {
             setErrMsg('')
-            const res = await setGoal(reqData)
+            console.log(reqData)
+            const res = await createGoal(reqData)
 
             console.log(res);
 
@@ -97,6 +103,8 @@ function GoalSetting() {
 
             if (res.data){
                 console.log("success:", res.data);
+                dispatch(setGoal(res.data))
+                navigate('/')
             }
 
         } catch (error) {
@@ -171,8 +179,8 @@ function GoalSetting() {
 
                 <label htmlFor='gender' className='inline-block pl-2 mt-4 text-secondary text-l font-medium'>Select Gender</label>
                 <select className='px-3 py-2 rounded-xl bg-white outline-none focus:bg-green-50 duration-200 border-2 border-secondary text-secondary w-full h-12 lg:w-1/2' id='gender' value={gender} onChange={(e)=>{setGender(e.target.value)}}>
-                    <option value="m">Male</option>
-                    <option value="f">Female</option>
+                    <option value="0">Male</option>
+                    <option value="1">Female</option>
                 </select>
 
                 <label htmlFor='pal' className='inline-block pl-2 mt-2 text-secondary text-l font-medium'>Select Physical Activity Level</label>

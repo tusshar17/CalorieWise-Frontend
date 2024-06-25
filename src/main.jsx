@@ -5,6 +5,8 @@ import './index.css'
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { store } from './app/store.js'
+import { ApiProvider } from '@reduxjs/toolkit/query/react'
+import { goalApi } from './services/goalService.js'
 import SignUp from "./pages/auth/SignUp.jsx"
 import OTPVerification from './pages/auth/OTPVerification.jsx'
 import Layout from './components/Layout.jsx'
