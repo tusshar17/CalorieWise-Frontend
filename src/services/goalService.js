@@ -1,15 +1,20 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { getToken } from "./LocalStorageService";
+import {getTokens} from '../features/authSlice'
+
 
 export const goalApi = createApi({
     reducerPath: "goalApi",
     baseQuery: fetchBaseQuery({
         baseUrl: "http://192.168.29.181:8000/api/",
-        prepareHeaders: (headers) => {
-            const {access_token} = getToken()
+        prepareHeaders: (headers, {getState}) => {
+            const state = getState()
+            console.log("state", state);
+            const access_token = getTokens(state)
+            console.log("fgdg", access_token);
             if (access_token){
                 headers.set("Authorization", `Bearer ${access_token}`)
             } 
+            return headers
         }
     }),
     endpoints: (builder)=>({

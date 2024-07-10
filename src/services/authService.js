@@ -46,9 +46,29 @@ export const authApi = createApi({
                 }
             }
         }),
+        logInUser: builder.mutation({
+            query: (user)=>{
+                return {
+                    url: "login/",
+                    method: "POST",
+                    body: user,
+                    headers: {
+                        "Content-type": "application/json",
+                    }
+                }
+            },
+            async onQueryStarted(arg, {dispatch, queryFulfilled}) {
+                try {
+                    const {data, meta} = await queryFulfilled;
+                    console.log("status code:", meta.response.status);
+                } catch (error) {
+                    console.log("Error:", error);
+                }
+            }
+        }),
     })
 })
 
 
 
-export const { useRegisterUserMutation, useVerifyOTPMutation } = authApi
+export const { useRegisterUserMutation, useVerifyOTPMutation, useLogInUserMutation } = authApi

@@ -21,18 +21,24 @@ export const goalSlice = createSlice({
     name: 'goal',
     initialState,
     reducers:{
-        setGoal:(state, action) => {
-            const goal_keys = Object.keys(state)
+        setGoal: (state, action) => {
+            console.log("goalslice:", action.payload);
+            const goal_keys = Object.keys(action.payload)
+            console.log("goalkeys", goal_keys);
             goal_keys.forEach(element => {
                 state[element] = action.payload[element]
             });
         },
+
+        clearGoal: (state) => {
+            state = {}
+        }
         
     }
 })
 
 
 
-export const { setGoal } = goalSlice.actions
+export const { setGoal, clearGoal } = goalSlice.actions
 
 export default goalSlice.reducer

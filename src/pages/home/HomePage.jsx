@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {useGetGoalQuery} from '../../services/goalService'
 import { setGoal } from '../../features/goalSlice'
@@ -11,17 +11,40 @@ import PrimaryBtn from '../../components/PrimaryBtn'
 import InsightGraph from '../../components/InsightGraph'
 import BottomMenu from '../../components/BottomMenu'
 import { useNavigate } from 'react-router-dom'
+import { getTokens } from '../../features/authSlice'
 import Loader from '../../components/Loader'
+
+
 
 function HomePage() {
     const value = 40
 
     const navigate = useNavigate()
 
+    const tokens = useSelector(getTokens)
 
-    const {data: goal_data, isLoading, isSuccess, isError, error} = useGetGoalQuery()
+    const dispatch = useDispatch()
+    const goalDataFromStore = useSelector((state) => state.goal)
+
+    // const {data: goalDataFromAPI, error, isError, isLoading, isSuccess} = useGetGoalQuery({skip: goalDataFromStore})
+    const {data: goalDataFromAPI, error, isError, isLoading, isSuccess} = useGetGoalQuery()
+    console.log("errorrrr", error);
+    if (error?.status === 401) {
+        navigate('/login')
+    }
 
 
+
+    useEffect(() => {
+        console.log("useeffect");
+        if (goalDataFromAPI && !goalDataFromStore.goal_calories) {
+            const dataFromAPI = goalDataFromAPI[0]
+            dispatch(setGoal({...dataFromAPI}))
+        }
+    }, [goalDataFromAPI, goalDataFromStore, dispatch])
+
+  
+    
     
 
   return (
@@ -32,13 +55,13 @@ function HomePage() {
 
         {isError && <h1 className='text-2xl mt-[30vh] font-medium'>Something went wrong! {error.status} - {error.error}</h1>}
 
-        {(isSuccess && goal_data.length == 0) && 
+        {(isSuccess && goalDataFromAPI.length == 0) && 
         <div className='flex flex-col gap-12 mt-[30vh]'>
             <h1 className='text-xl font-medium'>You have not set a goal yet 😲🤷‍♂️</h1>
             <PrimaryBtn value='Set Goal 💪' className='h-16' onClick={()=>{navigate('/goal-setting')}}/>
         </div>}
 
-        { (isSuccess && goal_data.length > 0) &&
+        { (isSuccess || goalDataFromStore) && 
             <main className='bg-lightwhite bg-opacity-0 flex flex-col min-w-full h-auto lg:min-h-[90vh] py-4 pb-[10vh] lg:pl-[3vw] lg:mt-4 rounded-t-3xl'>
 
             <div id='hero' className='flex flex-col items-center lg:flex-row'>
@@ -58,7 +81,10 @@ function HomePage() {
                                 <img src={goalLogo} className='w-auto h-1/2'/>
                                 <h3 className='text-blcklight text-lg font-medium'>Goal</h3>
                             </div>
-                            <h2 className='text-blackdark text-xl font-semibold'>{goal_data[0]?.goal_calories} Cal</h2>
+                            <h2 className='text-blackdark text-xl font-semibold'>
+                            {goalDataFromStore?.goal_calories?.toLocaleString()} 
+                            Cal
+                            </h2>
                         </div>
 
                         <div id='food-cal' className='border-lightwhite border-2 rounded-2xl flex flex-col justify-center items-center bg-white w-1/2 lg:w-[16vw] h-full shadow-2xl shadow-blcklight'>
@@ -76,13 +102,17 @@ function HomePage() {
                 <div id='hero-right' className='lg:w-1/2 w-full flex flex-col justify-items-center items-center'>
                     
                     <div id='macro-stats' className='border-lightwhite border-2 shadow-2xl shadow-blcklight bg-white rounded-3xl w-[80vw] h-[80vw] lg:w-[25vw] lg:h-[25vw] mt-8 flex flex-row flex-wrap gap-4 items-center justify-around p-2'>
-                        <MacroPie name="Protein" value="103" goal={goal_data[0]?.goal_protein}/>
-                        <MacroPie name="Carbs" value="75" goal={goal_data[0]?.goal_carbs}/>
-                        <MacroPie name="Fats" value="15" goal={goal_data[0]?.goal_fats}/>
-                        <MacroPie name="Sugar" value="25" goal={goal_data[0]?.goal_sugar}/>
+                        <MacroPie name="Protein" value="103" goal={goalDataFromStore.goal_protein}/>
+                        <MacroPie name="Carbs" value="75" goal={goalDataFromStore.goal_carbs}/>
+                        <MacroPie name="Fats" value="15" goal={goalDataFromStore.goal_fats}/>
+                        <MacroPie name="Sugar" value="25" goal={goalDataFromStore.goal_fats}/>
                     </div>
                     
-                    <PrimaryBtn value="Edit Today's Diary" className='w-1/2 h-16 mt-8 shadow-2xl shadow-blcklight active:scale-95 ease-in duration-200 lg:hover:bg-primary'/>
+                    <PrimaryBtn 
+                    value="Edit Today's Diary" 
+                    className='w-1/2 h-16 mt-8 shadow-2xl shadow-blcklight active:scale-95 ease-in duration-200 lg:hover:bg-primary' 
+                    onClick={()=>{navigate('/diary')}}
+                    />
 
                 </div>
             </div>

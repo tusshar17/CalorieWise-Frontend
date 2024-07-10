@@ -1,29 +1,33 @@
-import React, { useId } from 'react'
+import React, { forwardRef, useId } from 'react'
 
-function Input(
+const Input = forwardRef((
     {label,
     type = "text",
     className = "",
-    ...props}
-) {
+    parentClassName = "w-full",
+    ...props},
+    ref
+) => {
 
     const id = useId()
 
     return (
-        <div className='w-full flex flex-col'>
-            {label && <label className='inline-block pl-2 text-secondary text-l font-medium' htmlFor={id}>
+        <div className={`flex flex-col ${parentClassName}`}>
+            {label && <label className='inline-block pl-2 text-secondary text-lg font-medium' htmlFor={id}>
             {label}
             </label>
             }
 
             <input
                 type={type}
-                className={`px-3 py-2 rounded-xl bg-white outline-none focus:bg-lightwhite duration-200 border-2 border-secondary text-secondary font-semibold w-full h-12 lg:w-3/4 ${className}`}
+                ref={ref}
+                className={`px-3 py-2 rounded-lg bg-lightwhite outline-none focus:bg-white duration-200 border-2 border-secondary text-secondary font-semibold  ${className}`}
                 {...props}
                 id={id}
+                autoComplete="off"
             />
         </div>
     )
-}
+})
 
 export default Input

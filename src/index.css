@@ -3,7 +3,8 @@
 @tailwind utilities;
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  /* font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif; */
+  font-family: Poppins;
   line-height: 1.5;
   font-weight: 400;
 
@@ -17,7 +18,37 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+body {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: none; /* Background of the scrollbar track */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #0c7e70; /* Background of the scrollbar thumb */
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Background of the scrollbar thumb when hovered */
+}
+
 #layout-div {
+  background-image: radial-gradient(
+    circle farthest-corner at 10% 20%,
+    rgba(14, 174, 87, 1) 0%,
+    rgba(12, 116, 117, 1) 90%
+  );
+}
+
+.gradient-bg {
   background-image: radial-gradient(
     circle farthest-corner at 10% 20%,
     rgba(14, 174, 87, 1) 0%,
@@ -28,7 +59,7 @@
 .circular-progress {
   position: relative;
   background: conic-gradient(
-    #4ade80 0 calc(var(--value, 0) * 1%),
+    #0eac58 0 calc(var(--value, 0) * 1%),
     #d1d5db calc(var(--value, 0) * 1%) 100%
   );
 }

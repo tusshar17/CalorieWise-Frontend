@@ -8,7 +8,7 @@ import SecondaryBtn from '../../components/SecondaryBtn'
 import logoImage from '../../assets/images/food-macro-icon.png'
 import {useVerifyOTPMutation} from '../../services/authService'
 import { storeToken, getToken } from '../../services/LocalStorageService'
-import { setVerified } from '../../features/authSlice'
+import { setVerified, setToken } from '../../features/authSlice'
 
 
 const OTP_REGEX = /^\d{4}$/
@@ -58,7 +58,9 @@ function OTPVerification() {
             }
             // correct otp
             if (res.data){
-                storeToken(res.data.token)
+                // storeToken(res.data.token)
+                const {access_token, refresh_token} = res?.data?.token
+                dispatch(setToken({access_token, refresh_token}))
                 dispatch(setVerified())
                 console.log("token in ls", getToken());
                 navigate("/goal-setting")
