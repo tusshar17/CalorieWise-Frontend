@@ -5,6 +5,7 @@ const Input = forwardRef((
     type = "text",
     className = "",
     parentClassName = "w-full",
+    flexDirection = "flex-col",
     ...props},
     ref
 ) => {
@@ -12,7 +13,7 @@ const Input = forwardRef((
     const id = useId()
 
     return (
-        <div className={`flex flex-col ${parentClassName}`}>
+        <div className={`flex ${flexDirection} ${parentClassName}`}>
             {label && <label className='inline-block pl-2 text-secondary text-lg font-medium' htmlFor={id}>
             {label}
             </label>

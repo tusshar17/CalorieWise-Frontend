@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import AppName from '../../components/AppName'
 import ArrowIcon from '../../assets/icons/arrow-icon.svg'
 import BottomMenu from '../../components/BottomMenu'
@@ -10,38 +10,82 @@ import mealLogo from '../../assets/icons/mealLogo.png'
 import { goalApi } from '../../services/goalService'
 import MacroSummary from '../../components/diary/MacroSummary'
 import SecondaryBtn from '../../components/SecondaryBtn'
+import MealCard from '../../components/diary/MealCard'
+import MealEditModal from '../../components/diary/Modals/MealEditModal'
+import { useGetMealLogsQuery } from '../../services/mealLogService'
+import PrimaryBtn from '../../components/PrimaryBtn'
+import Loader from '../../components/Loader'
 
 function Diary() {
+
+  const [showMealEditModal, setShowMealEditModal] = useState(false)
+
+  // const date = new Date().toISOString().split('T')[0]
+  const date = "2023-07-19"
+
+  const {data:mealLogs, isLoading, isSuccess, refetch} = useGetMealLogsQuery(date)
+  console.log("meal logs", mealLogs);
+  
+  useEffect(() => {
+    console.log("fetching...");
+    refetch()
+    console.log(mealLogs);
+  }, [])
+
+
   return (
     <div className='w-screen h-auto min-h-screen flex flex-col items-center bg-lightwhite'>
 
         <AppName className='fixed top-0 gradient-bg w-full h-20'/>
 
+        {showMealEditModal && <MealEditModal date={date} onClose={()=>(setShowMealEditModal(false))} meal_logs={mealLogs}/>}
+
+        {isLoading && <Loader className='mt-52'/>}
+
+        {isSuccess && <>
+        {/* day-navigation */}
         <div id='day-navigation' className='w-full h-16 lg:w-3/5 lg:mt-24 mt-20 lg:rounded-full bg-white flex flex-row justify-around items-center'>
-            <img src={ArrowIcon}/>
+            <img src={ArrowIcon} className='h-full p-4 rounded-full lg:hover:bg-primary lg:hover:bg-opacity-10 ease-linear duration-150'/>
             <h2 className='text-secondary text-xl font-semibold'>Today</h2>
-            <img src={ArrowIcon} className='scale-x-[-1]'/>
+            <img src={ArrowIcon} className='scale-x-[-1] h-full p-4 rounded-full lg:hover:bg-primary lg:hover:bg-opacity-10 ease-linear duration-150'/>
         </div>
 
-        <div className='border-2 border-blackdark w-full h-auto lg:w-3/4 px-4 lg:px-0 mt-8 flex flex-col flex-wrap lg:flex-row gap-4 justify-evenly items-center'>
-          <div id='cal-sec-diary' className='border-2 border-secondary bg-white rounded-2xl w-full lg:w-1/3 flex flex-col gap-4 justify-center items-center py-4 px-8'>
-            <CaloriesSummary name="Goal" val={2800} icon={GoalLogo}/>
-            <CaloriesSummary name="Food" val={2800} icon={foodLogo}/>
-            <hr className='bg-extralight h-[2px] w-11/12'/>
-            <CaloriesSummary name="Remaining" val={2800} icon={smileLogo}/>
-          </div>
+        <div className='w-11/12 flex flex-col lg:flex-row gap-12 justify-center items-center mt-8 lg:mt-16'>
 
-          {/* macros */}
-          <div id='macro-sec-diary' className='border-2 border-secondary bg-white rounded-2xl w-full lg:w-1/3 flex flex-row gap-4 justify-between items-center py-4 px-8'>
-            <MacroSummary name="Protein" goal={100} val={50}/>
-            <MacroSummary name="Carbs" goal={300} val={220}/>
-            <MacroSummary name="Fats" goal={60} val={30}/>
-            <MacroSummary name="Sugar" goal={40} val={20}/>
-          </div>
+          {/* calories-summary | macros-summary | create-a-meal-button */}
+          <div className='w-full h-auto lg:w-1/3 flex flex-col flex-wrap gap-4 justify-center items-center'>
+            
+            {/* calories */}
+            <div id='cal-sec-diary' className='border-2 border-secondary bg-white rounded-2xl w-full flex flex-col gap-4 justify-center items-center py-4 px-8'>
+              <CaloriesSummary name="Goal" val={2800} icon={GoalLogo}/>
+              <CaloriesSummary name="Food" val={mealLogs.logs ? mealLogs?.day_calories : 0} icon={foodLogo}/>
+              <hr className='bg-extralight h-[2px] w-11/12'/>
+              <CaloriesSummary name="Remaining" val={2800} icon={smileLogo}/>
+            </div>
 
-          {/* btn - create new meal */}
-          <SecondaryBtn value='Create a new meal' className='w-3/4 lg:w-1/4 lg:mx-80 mt-4 h-16'/>
+            {/* macros */}
+            <div id='macro-sec-diary' className='border-2 border-secondary bg-white rounded-2xl w-full flex flex-row gap-4 justify-between items-center py-4 px-8'>
+              <MacroSummary name="Protein" goal={100} val={mealLogs.logs ? mealLogs?.day_protein : 0}/>
+              <MacroSummary name="Carbs" goal={300} val={mealLogs.logs ? mealLogs?.day_carbs : 0}/>
+              <MacroSummary name="Fats" goal={60} val={mealLogs.logs ? mealLogs?.day_fats : 0}/>
+              <MacroSummary name="Sugar" goal={40} val={mealLogs.logs ? mealLogs?.day_sugar : 0}/>
+            </div>
+
+            {/* btn - create new meal */}
+            {mealLogs.logs ? <SecondaryBtn onClick={()=>(setShowMealEditModal(true))} value="+ Create a new meal" className='w-3/4 lg:w-1/2 mt-4 h-16'/> :
+            <PrimaryBtn onClick={()=>(setShowMealEditModal(true))} value="Start Today's Diary" className='w-3/4 lg:w-1/2 mt-4 h-16'/>}
+          </div>
+          {/*  */}
+
+          {/* meal-cards */}
+          {mealLogs.logs && <div className='w-full flex flex-col justify-start items-center gap-4 lg:w-[30vw] lg:max-h-[65vh] lg:min-h-[65vh] overflow-y-scroll lg:border-0 lg:border-blackdark mb-24 lg:mb-0'>
+            {mealLogs && mealLogs?.logs.map((mealData, i)=>(
+              <MealCard mealData={mealData} key={i} meal_logs={mealLogs}/>
+            ))}
+          </div>}
+
         </div>
+        </>}
         
 
         <BottomMenu className='fixed bottom-0 lg:left-0 lg:top-[18vh] z-40'/>

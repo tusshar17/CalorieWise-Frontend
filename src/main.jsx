@@ -16,6 +16,7 @@ import GoalSetting from './pages/goal_setting/GoalSetting.jsx'
 import HomePage from './pages/home/HomePage.jsx'
 import Diary from './pages/diary/Diary.jsx'
 import UserItems from './pages/useritems/UserItems.jsx'
+import WeightPage from './pages/weight/WeightPage.jsx'
 
 
 
@@ -51,6 +52,10 @@ const router = createBrowserRouter([
       {
         path: "my-items",
         element: <UserItems/>
+      },
+      {
+        path: "weight",
+        element: <WeightPage/>
       }
     ]
   }

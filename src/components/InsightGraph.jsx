@@ -1,14 +1,16 @@
 import React, { useState } from 'react'
-import SecondaryBtn from './SecondaryBtn'
 
 function InsightGraph({
-    label = ""
+    label = "",
+    shadow = "shadow-2xl shadow-blcklight",
+    borderColor = "border-lightwhite",
+    className = ""
 }) {
 
     const [timeInterval, setTimeInterval] = useState()
 
   return (
-    <div className='w-full h-[36vh] lg:w-[28vw] lg:h-[50vh] bg-white shadow-2xl shadow-blcklight border-2 border-lightwhite px-4 py-6 rounded-3xl flex flex-col justify-between'>
+    <div className={`w-full h-[36vh] lg:w-[28vw] lg:h-[50vh] bg-white ${shadow} border-2 ${borderColor} px-4 py-6 rounded-3xl flex flex-col justify-between ${className}`}>
         <div className='w-full h-1/5 flex flex-row items-center justify-between'> 
             <h1 id='graph-label' className='text-blackdark text-xl font-bold'>{label}</h1>
             <select 
