@@ -28,7 +28,7 @@ export const mealLogApi = createApi({
                     }
                 }
             },
-            invalidatesTags: ['WeightRecords'],
+            invalidatesTags: ['MealLogs'],
             async onQueryStarted(arg, {dispatch, queryFulfilled}) {
                 try {
                     const {data, meta} = await queryFulfilled;
@@ -51,10 +51,10 @@ export const mealLogApi = createApi({
                     }
                 }
             },
-            invalidatesTags: ['WeightRecords'],
+            invalidatesTags: ['MealLogs'],
             async onQueryStarted(arg, {dispatch, queryFulfilled}) {
                 try {
-                    console.log("updating food item...");
+                    console.log("updating mealloggg...");
                     const {data, meta} = await queryFulfilled;
                     console.log("status code:", meta);
                 } catch (error) {

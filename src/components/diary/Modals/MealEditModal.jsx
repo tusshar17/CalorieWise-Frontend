@@ -1,19 +1,33 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Input from '../../../components/Input'
 import PrimaryBtn from '../../PrimaryBtn'
 import SecondaryBtn from '../../SecondaryBtn'
+import Loader from '../../Loader'
 import DeleteIcon from '../../../assets/icons/delete-icon.svg'
 import { useCreateMealLogMutation, useUpdateMealLogMutation } from '../../../services/mealLogService'
 
 const MealEditModal = ({
-    toRename = false, // to rename and delete
+    toRename = false, // to rename or delete
     meal_logs,
     mealData,
     date,
     onClose,
 }) => {
 
-  const [mealName, setMealName] = useState(mealData?.meal_name)
+  const [mealName, setMealName] = useState(mealData? mealData.meal_name : '')
+  const [validationErr, setValidationErr] = useState('')
+  const [validMealName, setValidMealName] = useState(false)
+
+  useEffect(()=> {
+    if(mealName === undefined || mealName === null || mealName === ''){
+        setValidationErr('Please enter a valid meal name')
+        setValidMealName(false)
+    }
+    else{
+        setValidMealName(true)
+        setValidationErr("")
+    }
+  }, [mealName])
 
   const modalRef = useRef()
   const closeModal = (e) => {
@@ -27,7 +41,13 @@ const MealEditModal = ({
   const handleSubmit = async(e) => {
     e.preventDefault()
 
+    if(mealName === undefined || mealName === null || mealName === ''){
+        setValidationErr("Please enter a valid meal name")
+        return
+    }
+
     if (!toRename) {
+        
         // start a new meal log
         if (!meal_logs.logs){
             console.log("initiating new log");
@@ -90,8 +110,17 @@ const MealEditModal = ({
     
   }
 
-  const handleDelete = () => {
+  const handleDelete = async(e) => {
+    e.preventDefault()
     console.log("delete");
+    const mealId = mealData.meal_id
+    const existingLog = meal_logs.logs
+    const newLogs = {...meal_logs}
+    newLogs.logs = existingLog.filter((log)=>log.meal_id!==mealId)
+    console.log("deleting", newLogs);
+    const mealLogID = meal_logs.id
+    const res = await addMealLog({mealLogID, ...newLogs})
+    console.log("delete pushed", res);
   }
 
   return (
@@ -108,30 +137,37 @@ const MealEditModal = ({
             <PrimaryBtn value='Ok' className='w-36 h-12' onClick={()=>(onClose())}/>
             </div>}
 
-            {!isSuccess && <form className='w-full h-[30vh] my-auto flex flex-col gap-4 items-center justify-center' onSubmit={handleSubmit}>
-                    <Input 
-                    label="Meal Name" 
-                    type="text" 
-                    value={mealName}
-                    onChange={(e)=>(setMealName(e.target.value))}
-                    parentClassName="w-3/4 lg:w-2/4" 
-                    flexDirection='flex-col'
-                    className="w-full"/>
+            {isLoading && <Loader className='my-auto'/>}
+
+            {(!isSuccess && !isLoading && !isError) && 
+            <form className='w-full h-[30vh] my-auto flex flex-col gap-4 items-center justify-center' onSubmit={handleSubmit}>
+                <Input 
+                label="Meal Name" 
+                type="text" 
+                value={mealName}
+                onChange={(e)=>(setMealName(e.target.value))}
+                parentClassName="w-3/4 lg:w-2/4" 
+                flexDirection='flex-col'
+                className="w-full"/>
+
+                {validationErr && <h2 className='text-sm text-center text-blcklight font-medium'>{validationErr}</h2>}
 
 
-                    <div className='w-10/12 mt-6 flex flex-row justify-around'>
-                    {toRename && 
-                        <button 
-                        onClick={handleDelete}
-                        className='w-[48px] h-[48px] bg-primary bg-opacity-25 rounded-lg border-2 border-secondary flex items-center justify-center'>
-                            <img src={DeleteIcon} className='w-[28px] h-[28px]'/>
-                        </button>}
-                    <SecondaryBtn value="Cancel" onClick={onClose} className='w-1/3 h-12'/>
+                <div className='w-10/12 mt-6 flex flex-row justify-around'>
                     <PrimaryBtn
                     type="submit"
                     value={toRename ? "Update" : "Create"} 
+                    disabled={!validMealName}
                     className='w-1/3 h-12'/>
-                    </div>
+                    <SecondaryBtn value="Cancel" onClick={onClose} className='w-1/3 h-12'/>
+                    {toRename && 
+                    <button 
+                    onClick={(e)=>(handleDelete(e))}
+                    className='w-[48px] h-[48px] bg-primary bg-opacity-25 rounded-lg border-2 border-secondary flex items-center justify-center'>
+                        <img src={DeleteIcon} className='w-[28px] h-[28px]'/>
+                    </button>}
+                    
+                </div>
             </form>}
         </div>
     </div>

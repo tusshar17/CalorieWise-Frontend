@@ -28,7 +28,7 @@ function Diary() {
   
   useEffect(() => {
     console.log("fetching...");
-    refetch()
+    // refetch()
     console.log(mealLogs);
   }, [])
 

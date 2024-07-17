@@ -10,7 +10,7 @@ function PrimaryBtn({
 }) {
   return (
         <button 
-        className={`bg-secondary border-primary border-2 rounded-full ${textSize} font-medium ${className}`}
+        className={`bg-secondary border-primary border-2 rounded-full ${textSize} font-medium ${className} disabled:opacity-60`}
         {...props}>
         {!isLoading && value}
         {isLoading && <Loader/>}
