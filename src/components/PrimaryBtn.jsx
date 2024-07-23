@@ -5,7 +5,7 @@ function PrimaryBtn({
     value = "Submit", 
     className = "",
     isLoading = false,
-    textSize = "text-xl",
+    textSize = "text-md",
     ...props
 }) {
   return (

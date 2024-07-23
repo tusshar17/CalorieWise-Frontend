@@ -68,7 +68,7 @@ function UserItems() {
       icon2={RecipeIcon}
       onClick1 = {clickFoodItemsTab}
       onClick2 = {clickRecipesTab}
-      className=''/>
+      className='mt-20 lg:mt-24 w-full lg:w-1/3 h-20 lg:h-16'/>
 
       {error && <h2 className='text-blcklight mt-32 text-center'>Something went wrong!</h2>}
 

@@ -15,9 +15,15 @@ import MealEditModal from '../../components/diary/Modals/MealEditModal'
 import { useGetMealLogsQuery } from '../../services/mealLogService'
 import PrimaryBtn from '../../components/PrimaryBtn'
 import Loader from '../../components/Loader'
+import {useGetGoalQuery} from '../../services/goalService'
+import MealItemModal from '../../components/diary/Modals/MealItemModal'
 
 function Diary() {
 
+  // goal data
+  const {data:goalData, isLoading:goalDataLoading, isSuccess:goalDataSuccess} = useGetGoalQuery()
+
+  // modal visibility
   const [showMealEditModal, setShowMealEditModal] = useState(false)
 
   // const date = new Date().toISOString().split('T')[0]
@@ -27,9 +33,9 @@ function Diary() {
   console.log("meal logs", mealLogs);
   
   useEffect(() => {
-    console.log("fetching...");
-    // refetch()
-    console.log(mealLogs);
+    console.log("use effect");
+    console.log("meal logs", mealLogs);
+    console.log("goal data", goalData);
   }, [])
 
 
@@ -38,7 +44,12 @@ function Diary() {
 
         <AppName className='fixed top-0 gradient-bg w-full h-20'/>
 
-        {showMealEditModal && <MealEditModal date={date} onClose={()=>(setShowMealEditModal(false))} meal_logs={mealLogs}/>}
+        {showMealEditModal && 
+        <MealEditModal 
+        date={date} 
+        onClose={()=>(setShowMealEditModal(false))} 
+        meal_logs={mealLogs}
+        />}
 
         {isLoading && <Loader className='mt-52'/>}
 
@@ -57,18 +68,55 @@ function Diary() {
             
             {/* calories */}
             <div id='cal-sec-diary' className='border-2 border-secondary bg-white rounded-2xl w-full flex flex-col gap-4 justify-center items-center py-4 px-8'>
-              <CaloriesSummary name="Goal" val={2800} icon={GoalLogo}/>
-              <CaloriesSummary name="Food" val={mealLogs.logs ? mealLogs?.day_calories : 0} icon={foodLogo}/>
+              
+              <CaloriesSummary 
+              name="Goal" 
+              val={goalData ? goalData[0]?.goal_calories.toFixed(0) : 0} 
+              icon={GoalLogo}
+              />
+
+              <CaloriesSummary 
+              name="Food" 
+              val={mealLogs.logs ? mealLogs?.day_calories.toFixed(0) : 0} 
+              icon={foodLogo}
+              />
+
               <hr className='bg-extralight h-[2px] w-11/12'/>
-              <CaloriesSummary name="Remaining" val={2800} icon={smileLogo}/>
+
+              <CaloriesSummary 
+              name="Remaining" 
+              val={(goalData ? goalData[0]?.goal_calories.toFixed(0) : 0) - (mealLogs.logs ? mealLogs?.day_calories.toFixed(0) : 0)} 
+              icon={smileLogo}/>
+
             </div>
 
             {/* macros */}
             <div id='macro-sec-diary' className='border-2 border-secondary bg-white rounded-2xl w-full flex flex-row gap-4 justify-between items-center py-4 px-8'>
-              <MacroSummary name="Protein" goal={100} val={mealLogs.logs ? mealLogs?.day_protein : 0}/>
-              <MacroSummary name="Carbs" goal={300} val={mealLogs.logs ? mealLogs?.day_carbs : 0}/>
-              <MacroSummary name="Fats" goal={60} val={mealLogs.logs ? mealLogs?.day_fats : 0}/>
-              <MacroSummary name="Sugar" goal={40} val={mealLogs.logs ? mealLogs?.day_sugar : 0}/>
+              
+              <MacroSummary 
+              name="Protein" 
+              goal={goalData ? goalData[0]?.goal_protein.toFixed(0) : '-'} 
+              val={mealLogs.logs ? mealLogs?.day_protein.toFixed(0) : 0}
+              />
+
+              <MacroSummary 
+              name="Carbs" 
+              goal={goalData ? goalData[0]?.goal_carbs.toFixed(0) : '-'} 
+              val={mealLogs.logs ? mealLogs?.day_carbs.toFixed(0) : 0}
+              />
+
+              <MacroSummary 
+              name="Fats" 
+              goal={goalData ? goalData[0]?.goal_fats.toFixed(0) : '-'} 
+              val={mealLogs.logs ? mealLogs?.day_fats.toFixed(0) : 0}
+              />
+              
+              <MacroSummary 
+              name="Sugar" 
+              goal={goalData ? goalData[0]?.goal_sugar.toFixed(0) : '-'} 
+              val={mealLogs.logs ? mealLogs?.day_sugar.toFixed(0) : 0}
+              />
+            
             </div>
 
             {/* btn - create new meal */}

@@ -11,7 +11,7 @@ function CaloriesSummary({
             <img src={icon} className='w-1/6 h-auto'/>
             <h2 className='text-blcklight text-lg font-medium'>{name}</h2>
         </div>
-        <h1 className='text-blackdark text-lg font-semibold'>{val} Cal</h1>
+        <h1 className='text-blackdark text-lg font-semibold'>{Number(val).toLocaleString()} Cal</h1>
     </div>
   )
 }

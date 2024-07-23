@@ -40,7 +40,7 @@ function SwitchTab({
 
 
   return (
-    <div className={`${className} mt-20 lg:mt-24 w-full lg:w-1/3 h-20 lg:h-16 bg-white shadow-sm shadow-blcklight lg:rounded-full lg:border-2 lg:border-lightwhite text-secondary box-border flex flex-row`}>
+    <div className={`${className} bg-white shadow-sm shadow-blcklight lg:rounded-full lg:border-2 lg:border-lightwhite text-secondary box-border flex flex-row`}>
       
       <button
       id='tab1' 

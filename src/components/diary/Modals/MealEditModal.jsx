@@ -14,18 +14,22 @@ const MealEditModal = ({
     onClose,
 }) => {
 
+  const mealNameRef = useRef()
+
   const [mealName, setMealName] = useState(mealData? mealData.meal_name : '')
-  const [validationErr, setValidationErr] = useState('')
   const [validMealName, setValidMealName] = useState(false)
+
+  useEffect(() => {
+    mealNameRef.current.focus()
+    console.log("meal edit modal loaded.....");
+  }, [])
 
   useEffect(()=> {
     if(mealName === undefined || mealName === null || mealName === ''){
-        setValidationErr('Please enter a valid meal name')
         setValidMealName(false)
     }
     else{
         setValidMealName(true)
-        setValidationErr("")
     }
   }, [mealName])
 
@@ -36,13 +40,13 @@ const MealEditModal = ({
     }
   }
 
-  const [addMealLog, {isError, isLoading, isSuccess}] = (!meal_logs.logs) ? useCreateMealLogMutation() : useUpdateMealLogMutation()
+  const [addMealLog, {isError:addError, isLoading:addLoading, isSuccess:addSuccess}] = useCreateMealLogMutation() 
+  const [updateMealLog, {isError:updateError, isLoading:updateLoading, isSuccess:updateSuccess}] = useUpdateMealLogMutation()
 
   const handleSubmit = async(e) => {
     e.preventDefault()
 
     if(mealName === undefined || mealName === null || mealName === ''){
-        setValidationErr("Please enter a valid meal name")
         return
     }
 
@@ -80,7 +84,7 @@ const MealEditModal = ({
             const mealLogID = meal_logs.id
             console.log("meal id", mealLogID);
             console.log("meal Logs new", newLog);
-            const res = await addMealLog({mealLogID, ...newLog}).unwrap()
+            const res = await updateMealLog({mealLogID, ...newLog}).unwrap()
             console.log("new meal added into existing log", res); 
         }
     }
@@ -104,7 +108,7 @@ const MealEditModal = ({
         })
         console.log("renamed", newLogs);
         const mealLogID = meal_logs.id
-        const res = await addMealLog({mealLogID, ...newLogs})
+        const res = await updateMealLog({mealLogID, ...newLogs})
         console.log("rename pushed", res);
     }
     
@@ -119,29 +123,31 @@ const MealEditModal = ({
     newLogs.logs = existingLog.filter((log)=>log.meal_id!==mealId)
     console.log("deleting", newLogs);
     const mealLogID = meal_logs.id
-    const res = await addMealLog({mealLogID, ...newLogs})
+    const res = await updateMealLog({mealLogID, ...newLogs})
     console.log("delete pushed", res);
+    console.log("isSuccess", );
   }
 
   return (
-    <div onClick={closeModal} ref={modalRef} className='fixed inset-0 min-h-screen bg-blcklight bg-opacity-30 backdrop-blur-sm z-50 flex justify-center items-center'>
+    <div onClick={closeModal} ref={modalRef} className='fixed inset-0 min-h-screen bg-blcklight bg-opacity-30 backdrop-blur-sm z-40 flex justify-center items-center'>
         <div className='w-10/12 lg:w-3/12 min-h-[50vh] bg-lightwhite border-secondary border-2 flex flex-col items-center justify-between rounded-3xl'>
 
             <h1 className='text-white text-xl text-center font-medium bg-secondary rounded-t-2xl w-full h-16 pt-4'>
                 {toRename ? "Edit Meal" : "Create Meal"}
             </h1>
 
-            {isSuccess && <div className='my-auto flex flex-col justify-center items-center gap-16'>
+            {(addSuccess || updateSuccess) && <div className='my-auto flex flex-col justify-center items-center gap-16'>
             <h1 className='text-secondary text-2xl font-medium my-auto'>
             Meal log {toRename ? "updated" : "created"}</h1>
             <PrimaryBtn value='Ok' className='w-36 h-12' onClick={()=>(onClose())}/>
             </div>}
 
-            {isLoading && <Loader className='my-auto'/>}
+            {(addLoading || updateLoading) && <Loader className='my-auto'/>}
 
-            {(!isSuccess && !isLoading && !isError) && 
+            {(!addLoading && !addSuccess && !addError && !updateLoading && !updateSuccess && !updateError) && 
             <form className='w-full h-[30vh] my-auto flex flex-col gap-4 items-center justify-center' onSubmit={handleSubmit}>
                 <Input 
+                ref={mealNameRef}
                 label="Meal Name" 
                 type="text" 
                 value={mealName}
@@ -150,18 +156,16 @@ const MealEditModal = ({
                 flexDirection='flex-col'
                 className="w-full"/>
 
-                {validationErr && <h2 className='text-sm text-center text-blcklight font-medium'>{validationErr}</h2>}
-
-
-                <div className='w-10/12 mt-6 flex flex-row justify-around'>
+                <div className='w-10/12 mt-6 flex flex-row flex-wrap gap-4 justify-around'>
                     <PrimaryBtn
                     type="submit"
-                    value={toRename ? "Update" : "Create"} 
+                    value={toRename ? "Save" : "Create"} 
                     disabled={!validMealName}
-                    className='w-1/3 h-12'/>
-                    <SecondaryBtn value="Cancel" onClick={onClose} className='w-1/3 h-12'/>
+                    className='w-3/4 h-12 mb-2'/>
+                    <SecondaryBtn value="Cancel" onClick={onClose} className='w-1/2 h-12'/>
                     {toRename && 
                     <button 
+                    type="button"
                     onClick={(e)=>(handleDelete(e))}
                     className='w-[48px] h-[48px] bg-primary bg-opacity-25 rounded-lg border-2 border-secondary flex items-center justify-center'>
                         <img src={DeleteIcon} className='w-[28px] h-[28px]'/>
