@@ -17,6 +17,7 @@ import HomePage from './pages/home/HomePage.jsx'
 import Diary from './pages/diary/Diary.jsx'
 import UserItems from './pages/useritems/UserItems.jsx'
 import WeightPage from './pages/weight/WeightPage.jsx'
+import Profile from './pages/profile/Profile.jsx'
 
 
 
@@ -56,6 +57,10 @@ const router = createBrowserRouter([
       {
         path: "weight",
         element: <WeightPage/>
+      },
+      {
+        path: "profile",
+        element: <Profile/>
       }
     ]
   }

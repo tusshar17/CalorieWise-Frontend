@@ -56,7 +56,7 @@ const MealEditModal = ({
         if (!meal_logs.logs){
             console.log("initiating new log");
             const reqData = {
-                'date': date,
+                'date': date.toISOString().split('T')[0],
                 'logs': [
                     {
                         'meal_name': mealName,
@@ -142,6 +142,13 @@ const MealEditModal = ({
             <PrimaryBtn value='Ok' className='w-36 h-12' onClick={()=>(onClose())}/>
             </div>}
 
+            {(addError || updateError) && <div className='my-auto flex flex-col justify-center items-center gap-16'>
+            <h1 className='text-secondary text-2xl font-medium my-auto'>
+            Something went wrong!
+            </h1>
+            <PrimaryBtn value='Ok' className='w-36 h-12' onClick={()=>(onClose())}/>
+            </div>}
+
             {(addLoading || updateLoading) && <Loader className='my-auto'/>}
 
             {(!addLoading && !addSuccess && !addError && !updateLoading && !updateSuccess && !updateError) && 
@@ -149,6 +156,7 @@ const MealEditModal = ({
                 <Input 
                 ref={mealNameRef}
                 label="Meal Name" 
+                placeholder="Breakfast"
                 type="text" 
                 value={mealName}
                 onChange={(e)=>(setMealName(e.target.value))}

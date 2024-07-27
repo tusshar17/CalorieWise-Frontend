@@ -6,8 +6,6 @@ import CaloriesSummary from '../../components/diary/CaloriesSummary'
 import GoalLogo from '../../assets/icons/goal.png' 
 import foodLogo from '../../assets/icons/food.png' 
 import smileLogo from '../../assets/icons/smile.png'
-import mealLogo from '../../assets/icons/mealLogo.png'    
-import { goalApi } from '../../services/goalService'
 import MacroSummary from '../../components/diary/MacroSummary'
 import SecondaryBtn from '../../components/SecondaryBtn'
 import MealCard from '../../components/diary/MealCard'
@@ -16,7 +14,6 @@ import { useGetMealLogsQuery } from '../../services/mealLogService'
 import PrimaryBtn from '../../components/PrimaryBtn'
 import Loader from '../../components/Loader'
 import {useGetGoalQuery} from '../../services/goalService'
-import MealItemModal from '../../components/diary/Modals/MealItemModal'
 
 function Diary() {
 
@@ -27,22 +24,40 @@ function Diary() {
   const [showMealEditModal, setShowMealEditModal] = useState(false)
 
   // const date = new Date().toISOString().split('T')[0]
-  const date = "2023-07-19"
+  // const date = "2023-07-19"
+  const today = new Date()
+  const [date, setDate] = useState(today)
 
-  const {data:mealLogs, isLoading, isSuccess, refetch} = useGetMealLogsQuery(date)
+  const changeDate = (dt, toIncrement) => {
+    let newDate = new Date(dt)
+    const change = toIncrement ? 1 : -1
+    newDate.setDate(newDate.getDate() + change)
+    return newDate
+  }
+
+  const isToday = () => {
+    let dd = date.getDate() == today.getDate()
+    let mm = date.getMonth() == today.getMonth()
+    let yyyy = date.getFullYear() == today.getFullYear()
+    return dd && mm && yyyy
+  }
+
+  const {data:mealLogs, isLoading, isSuccess, refetch} = useGetMealLogsQuery(date.toISOString().split('T')[0])
   console.log("meal logs", mealLogs);
   
   useEffect(() => {
     console.log("use effect");
+    console.log("date", date);
     console.log("meal logs", mealLogs);
     console.log("goal data", goalData);
-  }, [])
+    console.log("today", today.getDate());
+  }, [date])
 
 
   return (
     <div className='w-screen h-auto min-h-screen flex flex-col items-center bg-lightwhite'>
 
-        <AppName className='fixed top-0 gradient-bg w-full h-20'/>
+        <AppName className='fixed top-0 gradient-bg w-full h-20' showTagLine={false}/>
 
         {showMealEditModal && 
         <MealEditModal 
@@ -56,9 +71,15 @@ function Diary() {
         {isSuccess && <>
         {/* day-navigation */}
         <div id='day-navigation' className='w-full h-16 lg:w-3/5 lg:mt-24 mt-20 lg:rounded-full bg-white flex flex-row justify-around items-center'>
+          <button className='rounded-full lg:hover:bg-primary lg:hover:bg-opacity-10 ease-linear duration-150' onClick={()=>{setDate(changeDate(date, false))}}>
             <img src={ArrowIcon} className='h-full p-4 rounded-full lg:hover:bg-primary lg:hover:bg-opacity-10 ease-linear duration-150'/>
-            <h2 className='text-secondary text-xl font-semibold'>Today</h2>
-            <img src={ArrowIcon} className='scale-x-[-1] h-full p-4 rounded-full lg:hover:bg-primary lg:hover:bg-opacity-10 ease-linear duration-150'/>
+          </button>
+          <h2 className='text-secondary text-xl font-semibold'>
+          {isToday() ? 'Today' : date.toLocaleDateString('en-us', {year: 'numeric', month:'short', day:'numeric'})}
+          </h2>
+        <button className='rounded-full lg:hover:bg-primary lg:hover:bg-opacity-10 ease-linear duration-150' onClick={()=>{setDate(changeDate(date, true))}}>
+          <img src={ArrowIcon} className='scale-x-[-1] h-full p-4'/>
+        </button>
         </div>
 
         <div className='w-11/12 flex flex-col lg:flex-row gap-12 justify-center items-center mt-8 lg:mt-16'>
@@ -126,7 +147,7 @@ function Diary() {
           {/*  */}
 
           {/* meal-cards */}
-          {mealLogs.logs && <div className='w-full flex flex-col justify-start items-center gap-4 lg:w-[30vw] lg:max-h-[65vh] lg:min-h-[65vh] overflow-y-scroll lg:border-0 lg:border-blackdark mb-24 lg:mb-0'>
+          {mealLogs.logs?.length>0 && <div className='w-full flex flex-col justify-start items-center gap-4 lg:w-[30vw] lg:max-h-[65vh] lg:min-h-[65vh] overflow-y-scroll lg:border-0 lg:border-blackdark mb-24 lg:mb-0'>
             {mealLogs && mealLogs?.logs.map((mealData, i)=>(
               <MealCard mealData={mealData} key={i} meal_logs={mealLogs}/>
             ))}

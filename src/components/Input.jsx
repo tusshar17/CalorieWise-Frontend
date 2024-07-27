@@ -22,7 +22,7 @@ const Input = forwardRef((
             <input
                 type={type}
                 ref={ref}
-                className={`px-3 py-2 rounded-lg bg-lightwhite outline-none focus:bg-white duration-200 border-2 border-secondary text-secondary font-semibold  ${className}`}
+                className={`px-3 py-2 bg-lightwhite bg-opacity-0 outline-none duration-200 border-b-2 border-extralight focus:border-secondary text-secondary font-semibold  ${className}`}
                 {...props}
                 id={id}
                 autoComplete="off"

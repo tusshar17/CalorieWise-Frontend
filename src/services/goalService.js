@@ -1,11 +1,12 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import {getTokens} from '../features/authSlice'
+import {backend} from '../config'
 
 
 export const goalApi = createApi({
     reducerPath: "goalApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: "http://192.168.29.181:8000/api/",
+        baseUrl: `${backend}/api/`,
         prepareHeaders: (headers, {getState}) => {
             const state = getState()
             console.log("state", state);
@@ -17,6 +18,7 @@ export const goalApi = createApi({
             return headers
         }
     }),
+    tagTypes: ['GoalData'],
     endpoints: (builder)=>({
         createGoal: builder.mutation({
             query: (data)=>{
@@ -29,6 +31,29 @@ export const goalApi = createApi({
                     }
                 }
             },
+            invalidatesTags: ['GoalData'],
+            async onQueryStarted(arg, {dispatch, queryFulfilled}) {
+                try {
+                    const {data, meta} = await queryFulfilled;
+                    console.log("status code:", meta.response.status);
+                } catch (error) {
+                    console.log("Error:", error);
+                }
+            }
+        }),
+
+        updateGoal: builder.mutation({
+            query: ({goalID, ...data})=>{
+                return {
+                    url: `goal/${goalID}/`,
+                    method: "PATCH",
+                    body: data,
+                    headers: {
+                        "Content-type": "application/json",
+                    }
+                }
+            },
+            invalidatesTags: ['GoalData'],
             async onQueryStarted(arg, {dispatch, queryFulfilled}) {
                 try {
                     const {data, meta} = await queryFulfilled;
@@ -41,6 +66,7 @@ export const goalApi = createApi({
 
         getGoal: builder.query({
             query: () => 'goal',
+            providesTags: ['GoalData'],
             async onQueryStarted(arg, {dispatch, queryFulfilled}) {
                 try {
                     const {data, meta} = await queryFulfilled;
@@ -56,4 +82,4 @@ export const goalApi = createApi({
 
 
 
-export const { useCreateGoalMutation, useGetGoalQuery } = goalApi
+export const { useCreateGoalMutation, useGetGoalQuery, useUpdateGoalMutation } = goalApi

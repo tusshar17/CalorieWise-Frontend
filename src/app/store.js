@@ -14,7 +14,6 @@ import goalReducer from '../features/goalSlice'
 const persistConfig = {
   key: 'root',
   storage,
-  // blacklist: [`${userItemApi.reducerPath}`]
 }
 
 const rootReducer = combineReducers({
@@ -35,17 +34,5 @@ const persistedReducer = persistReducer(persistConfig, rootReducer)
 })
 
 export const persistor = persistStore(store)
-
-
-// export const store = configureStore({
-//   reducer: {
-//     [authApi.reducerPath]: authApi.reducer,
-//     [goalApi.reducerPath]: goalApi.reducer,
-//     auth: authReducer,
-//     goal: goalReducer,
-//   },
-//   middleware: (getDefaultMiddleware) =>
-//     getDefaultMiddleware().concat(authApi.middleware).concat(goalApi.middleware),
-// })
 
 setupListeners(store.dispatch)

@@ -52,6 +52,18 @@ const RecipeItemModal = ({
         }
     }
 
+    const validateRecipeName = (val) => {
+        if (val === '' || val === null || val === undefined || val.length < 3) return false
+        else return true
+    }
+
+    const validateRecipeItems = (items) => {
+        if (items === null || items.length === 0 || items === undefined) return false
+        else return true
+    } 
+
+    useEffect(()=>(console.log("dfdfdf", recipeItems)), [recipeItems])
+
     const [deleteFoodItem, {isError:deleteErr, isSuccess:deleteSuccess}] = useDeleteRecipeMutation()
 
     const handleDelete = async (e) => {
@@ -99,6 +111,7 @@ const RecipeItemModal = ({
                     value={toUpdate ? 'Save' : 'Create'}
                     type='submit'
                     className='w-2/5 h-12'
+                    disabled={!validateRecipeName(recipeName) || !validateRecipeItems(recipeItems)}
                     />
                     <SecondaryBtn
                     value='Cancel'

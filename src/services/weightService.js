@@ -1,11 +1,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import {getTokens} from '../features/authSlice'
-
+import {backend} from '../config'
 
 export const weightApi = createApi({
     reducerPath: "weightApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: "http://192.168.29.181:8000/api/weight/",
+        baseUrl: `${backend}/api/weight/`,
         prepareHeaders: (headers, {getState}) => {
             const state = getState()
             const access_token = getTokens(state)
@@ -88,12 +88,13 @@ export const weightApi = createApi({
 
         getWeightRecords: builder.query({
             query: () => 'record',
-            providesTags: (result) =>
-                result
-                  ? // If the query is successful, return an array of tags with id for each post
-                    [...result.map(({ id }) => ({ type: 'WeightRecords', id })), 'WeightRecords']
-                  : // If the query fails, return an empty array
-                    ['WeightRecords'],
+            // providesTags: (result) =>
+            //     result
+            //       ? // If the query is successful, return an array of tags with id for each post
+            //         [...result.map(({ id }) => ({ type: 'WeightRecords', id })), 'WeightRecords']
+            //       : // If the query fails, return an empty array
+            //         ['WeightRecords'],
+            providesTags: ['WeightRecords'],
         
             async onQueryStarted(arg, {dispatch, queryFulfilled}) {
                 try {

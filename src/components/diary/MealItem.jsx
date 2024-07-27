@@ -24,7 +24,7 @@ const MealItem = ({
         eachLog={mealLog}
         />
         }
-    <button onClick={() => setShowMealItemModal(true)} className='p-4 flex flex-col gap-2 lg:hover:bg-extralight lg:hover:bg-opacity-20'>
+    <button onClick={() => setShowMealItemModal(true)} className='p-4 flex flex-col gap-2 lg:hover:bg-extralight lg:hover:bg-opacity-20 border-b-2 border-lightwhite'>
         <div className='w-full flex flex-row justify-between items-center'>
             <h1 className='text-blackdark text-md font-medium lg:font-semibold'>{mealItemInfo.name}</h1>
             <h1 className='text-blackdark text-md font-medium lg:font-semibold'>{calculateMacros(mealItemInfo.calories)} Cal</h1>
@@ -34,7 +34,6 @@ const MealItem = ({
             <h3 className='text-blcklight text-sm lg:text-md font-normal lg:font-medium'>(serving of {mealItemInfo.qty_used_in_g}g)</h3>
         </div>
     </button>
-    <hr className='bg-lightwhite h-[2px]'/>
     </>
   )
 }

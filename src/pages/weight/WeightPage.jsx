@@ -34,7 +34,7 @@ const WeightPage = () => {
           <div className='w-full lg:w-3/5 flex flex-col items-center justify-center'>
             <div className='flex flex-col items-center justify-center px-4 lg:flex-row mt-24 w-full lg:h-[50vh] lg:w-[60vw] gap-8'>
               {/* progress pie */}
-              <WeightProgressPie currentWeight={weightRecords[0].weight}/>
+              {/* <WeightProgressPie currentWeight={weightRecords[0].weight}/> */}
 
               {/* weight graph */}
               <InsightGraph label='Weight' borderColor='border-secondary' shadow='' className='lg:min-w-[25vw]'/>

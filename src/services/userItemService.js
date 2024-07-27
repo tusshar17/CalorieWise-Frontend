@@ -1,11 +1,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import {getTokens} from '../features/authSlice'
-
+import {backend} from '../config'
 
 export const userItemApi = createApi({
     reducerPath: "userItemApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: "http://192.168.29.181:8000/api/user-item/",
+        baseUrl: `${backend}/api/user-item/`,
         prepareHeaders: (headers, {getState}) => {
             const state = getState()
             const access_token = getTokens(state)

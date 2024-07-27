@@ -24,7 +24,7 @@ const menuItems = [
         url: "/weight"
     },
     {
-        name: "My Items",
+        name: "Items",
         logo: recipeLogo,
         url: "/my-items"
     },
@@ -42,7 +42,7 @@ function BottomMenu({
     const navigate = useNavigate()
 
   return (
-    <div id='bottom-menu' className={`w-screen lg:w-[5vw] lg:px-2 lg:py-2 rounded-t-2xl lg:rounded-tl-none lg:rounded-r-3xl lg lg:h-[64vh] h-[8vh] border-2 border-lightwhite shadow-md shadow-blcklight bg-white flex flex-row lg:flex-col lg:justify-around ${className}`}>
+    <div id='bottom-menu' className={`w-screen lg:w-[5vw] lg:px-2 lg:py-2 rounded-t-2xl lg:rounded-tl-none lg:rounded-r-3xl lg lg:h-[64vh] h-[8vh] box-border border-2 border-lightwhite shadow-md shadow-blcklight bg-white flex flex-row lg:flex-col lg:justify-around ${className}`}>
 
         {menuItems.map((item, index)=>(
             <button 

@@ -74,17 +74,43 @@ const FoodItemModal = ({
         console.log("delllllll", res);
     }
 
+    const validateNumericInput = (val) => {
+        if (val === null || val < 0 || val === undefined || val === '') {
+            return false
+        }
+        else {
+            return true
+        }
+    }
+
+    const validateName = (val) => {
+        if (val === null || val === undefined || val === '' || val.length < 3) {
+            return false
+        }
+        else {
+            return true
+        }
+    }
+
   return (
     <div onClick={closeModal} ref={modalRef} className='fixed inset-0 min-h-screen max-h-screen bg-blcklight bg-opacity-30 backdrop-blur-sm z-40 flex justify-center items-center'>
-        <div className='w-full lg:w-4/12 min-h-[100vh] bg-white border-secondary border-0 rounded-3xl flex flex-col items-center justify-start'>
-            <h1 className='text-white text-xl text-center font-medium bg-secondary rounded-t-2xl w-full h-16 pt-4'>
+        <div className='w-full lg:w-4/12 min-h-[100vh] bg-lightwhite border-secondary border-0 rounded-3xl flex flex-col items-center justify-start'>
+            <h1 className='text-white text-xl text-center font-medium bg-secondary lg:rounded-t-2xl w-full h-16 pt-4'>
             {toUpdate ? "Update Food Item" : "Add Food Item"}
             </h1>
+
             {isLoading && <Loader className='my-auto'/>}
 
             {isSuccess && <div className='my-auto flex flex-col justify-center items-center gap-16'>
             <h1 className='text-secondary text-2xl font-medium my-auto'>
             Food item {toUpdate ? "updated" : "created"}
+            </h1>
+            <PrimaryBtn value='Ok' className='w-36 h-12' onClick={()=>(onClose())}/>
+            </div>}
+
+            {(isError || deleteErr) && <div className='my-auto flex flex-col justify-center items-center gap-16'>
+            <h1 className='text-secondary text-2xl font-medium my-auto'>
+            Something Went wrong.
             </h1>
             <PrimaryBtn value='Ok' className='w-36 h-12' onClick={()=>(onClose())}/>
             </div>}
@@ -97,15 +123,15 @@ const FoodItemModal = ({
             </div>}
 
             {(!isLoading && !isSuccess && !deleteSuccess) &&
-            <form onSubmit={handleSubmit} className='flex flex-col gap-2 justify-center items-center w-full px-8 lg:px-0 lg:w-4/5 my-8'>
+            <form onSubmit={handleSubmit} className='flex flex-col gap-8 justify-center items-center w-full px-8 lg:px-0 lg:w-4/5 my-8'>
                 <Input type='text' ref={itemNameRef} label="Name" value={itemName} onChange={(e)=>{setItemName(e.target.value)}}/>
-                <Input type='text' label="Serving Size (in g)" value={servingSize} onChange={(e)=>{setServingSize(e.target.value)}}/>
-                <Input type='text' label="Calories" value={calories} onChange={(e)=>{setCalories(e.target.value)}}/>
+                <Input type='number' label="Serving Size (in g)" value={servingSize} onChange={(e)=>{setServingSize(e.target.value)}}/>
+                <Input type='number' label="Calories" value={calories} onChange={(e)=>{setCalories(e.target.value)}}/>
                 <div className='w-full flex flex-row flex-wrap gap-2'>
-                    <Input type='text' label="Protein (in g)" parentClassName='w-2/5 mr-6' value={protein} onChange={(e)=>{setProtein(e.target.value)}}/>
-                    <Input type='text' label="Carbs (in g)" parentClassName='w-2/5 mr-6' value={carbs} onChange={(e)=>{setCarbs(e.target.value)}}/>
-                    <Input type='text' label="Fats (in g)" parentClassName='w-2/5 mr-6' value={fats} onChange={(e)=>{setFats(e.target.value)}}/>
-                    <Input type='text' label="Sugar (in g)" parentClassName='w-2/5 mr-6' value={sugar} onChange={(e)=>{setSugar
+                    <Input type='number' label="Protein (in g)" parentClassName='w-2/5 mr-6' value={protein} onChange={(e)=>{setProtein(e.target.value)}}/>
+                    <Input type='number' label="Carbs (in g)" parentClassName='w-2/5 mr-6' value={carbs} onChange={(e)=>{setCarbs(e.target.value)}}/>
+                    <Input type='number' label="Fats (in g)" parentClassName='w-2/5 mr-6' value={fats} onChange={(e)=>{setFats(e.target.value)}}/>
+                    <Input type='number' label="Sugar (in g)" parentClassName='w-2/5 mr-6' value={sugar} onChange={(e)=>{setSugar
                     (e.target.value)}}/>
                 </div>
 
@@ -114,6 +140,7 @@ const FoodItemModal = ({
                     value={toUpdate ? 'Save' : 'Create'}
                     type='submit'
                     className='w-2/5 h-12'
+                    disabled={!validateNumericInput(protein) || !validateNumericInput(carbs) || !validateNumericInput(fats) || !validateNumericInput(sugar) || !validateNumericInput(servingSize) || !validateNumericInput(calories) || !validateName(itemName)}
                     />
                     <SecondaryBtn
                     value='Cancel'

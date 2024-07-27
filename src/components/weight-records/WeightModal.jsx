@@ -49,7 +49,7 @@ const WeightModal = ({
         console.log("datedate", dateToCompare>currentDate);
 
         if (dateToCompare > currentDate){
-            setValidationErr("Wait a minute! You know how much you are gonna weight in future? If no, then please select a valid date 😂")
+            setValidationErr("You know how much you are gonna weight in future? If no, then please select a valid date 😂")
             return
         }
 

@@ -3,13 +3,13 @@ import SwitchTab from '../../SwitchTab'
 import FoodLogo from '../../../assets/icons/food.png'
 import RecipeIcon from '../../../assets/icons/recipe-icon.svg'
 import Input from '../../Input'
-import SearchFoodItems from '../../user-items/SearchFoodItems'
 import DeleteIcon from '../../../assets/icons/delete-icon.svg'
 import PrimaryBtn from '../../PrimaryBtn'
 import SecondaryBtn from '../../SecondaryBtn'
 import { useGetFoodItemsQuery, useGetRecipesQuery } from '../../../services/userItemService'
 import { useUpdateMealLogMutation } from '../../../services/mealLogService'
 import SelectedFoodItemInfo from './SelectedFoodItemInfo'
+import FoodItemInRecipe from '../../user-items/FoodItemInRecipe'
 
 const MealItemModal = ({
   onClose,
@@ -40,6 +40,7 @@ const MealItemModal = ({
     setShowRecipes(false)
     setSearchQuery('')
     setItemSelected('')
+    setRecipeSelected('')
   }
 
   const clickRecipesTab = (e) => {
@@ -47,10 +48,13 @@ const MealItemModal = ({
     setShowRecipes(true)
     setSearchQuery('')
     setItemSelected('')
+    setRecipeSelected('')
   }
 
   const [selectedFoodItem, setSelectedFoodItem] = useState(foodData)
+  const [selectedRecipe, setSelectedRecipe] = useState()
   const [itemSelected, setItemSelected] = useState(false)
+  const [recipeSelected, setRecipeSelected] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [itemSuggestions, setItemSuggestions] = useState([])
   const searchRef = useRef()
@@ -81,32 +85,27 @@ const MealItemModal = ({
   },[searchQuery])
 
   const handleSelectItem = (e, item) => {
+    console.log("selecte#######", item);
     setSearchQuery('')
-    setItemSelected(true)
-    console.log(item);
     if(showFoodItems){
+      setItemSelected(true)
       setSelectedFoodItem(item)
     }
 
     if(showRecipes){
-      setSelectedFoodItem(item)
+      setRecipeSelected(true)
+      setSelectedRecipe({...item})
     }
 
-    console.log("selected item", selectedFoodItem);
   }
 
   const [foodItemQtyUsed, setFoodItemQtyUsed] = useState(foodData?.qty_used_in_g)
-  const [foodItemServingSize, setFoodItemServingSize] = useState(foodData?.serving_size_in_g)
 
   useEffect(() => {
     console.log("non req useffect calling");
     setFoodItemQtyUsed(selectedFoodItem?.qty_used_in_g ? selectedFoodItem?.qty_used_in_g : selectedFoodItem?.serving_size_in_g)
-    setFoodItemServingSize(selectedFoodItem?.serving_size_in_g)
   }, [selectedFoodItem])
 
-  const calculateMacros = (val) => {
-    return ((val/foodItemServingSize)*foodItemQtyUsed).toFixed(2)
-  }
 
   const [updateMealLog, {isLoading:createNewLogLoading, isError:createNewLogError, isSuccess:createNewLogSuccess}] = useUpdateMealLogMutation()
 
@@ -118,8 +117,16 @@ const MealItemModal = ({
     
     const mealToBeUpdated = {...completeLogs.logs.filter(meal=>meal.meal_id===mealID)[0]}
 
-    if (!toUpdate && showFoodItems) {
-      mealToBeUpdated.food_items = [...mealToBeUpdated.food_items, {...selectedFoodItem, qty_used_in_g: Number(foodItemQtyUsed)}]
+    if (!toUpdate) {
+
+      if (showFoodItems){
+        mealToBeUpdated.food_items = [...mealToBeUpdated.food_items, {...selectedFoodItem, qty_used_in_g: Number(foodItemQtyUsed)}]
+      }
+
+      if (showRecipes) {
+        console.log("@#@#@#@#", selectedRecipe.recipe_items);
+        mealToBeUpdated.food_items = [...mealToBeUpdated.food_items, ...selectedRecipe?.recipe_items]
+      }
 
       const newMeals = completeLogs.logs.map((meal)=>(
         meal.meal_id === mealID ? mealToBeUpdated : meal
@@ -185,6 +192,21 @@ const MealItemModal = ({
   }
 
 
+  // recipe handling
+  const handleRecipeItemRemove = (e, index, item) => {
+    e.preventDefault()
+    const newRecipeItems = selectedRecipe.recipe_items.filter((_, i)=>i!==index)
+    setSelectedRecipe({...selectedRecipe, recipe_items:newRecipeItems})
+  }
+
+  const handleRecieItemQtyChange = (e, index) => {
+    const newRecipeItems = selectedRecipe.recipe_items.map((item, i) => {
+      return i==index ? {...item, 'qty_used_in_g': Number(e.target.value)} : item
+    })
+    setSelectedRecipe({...selectedRecipe, recipe_items:newRecipeItems})
+  }
+
+
   return (
     <div onClick={closeModal} ref={modalRef} className='fixed inset-0 min-h-screen bg-blcklight bg-opacity-30 backdrop-blur-sm z-50 flex justify-center items-center'>
 
@@ -199,6 +221,13 @@ const MealItemModal = ({
             Food Log {toUpdate ? "updated" : "added"}</h1>
             <PrimaryBtn value='Ok' className='w-36 h-12' onClick={()=>(onClose())}/>
             </div>}
+
+        {createNewLogError && <div className='my-auto flex flex-col justify-center items-center gap-16 mt-[40vh]'>
+        <h1 className='text-secondary text-2xl font-medium my-auto'>
+        Something went wrong!
+        </h1>
+        <PrimaryBtn value='Ok' className='w-36 h-12' onClick={()=>(onClose())}/>
+        </div>}
 
         {(!toUpdate && (!createNewLogError && !createNewLogLoading && !createNewLogSuccess)) && <SwitchTab 
         tabName1="Food Items" 
@@ -248,10 +277,14 @@ const MealItemModal = ({
             />
             }
 
-            {((itemSelected && showRecipes) && (!createNewLogError && !createNewLogLoading && !createNewLogSuccess))&& 
+            {((recipeSelected && showRecipes) && (!createNewLogError && !createNewLogLoading && !createNewLogSuccess))&& 
             <h1>
             {/* show selected recipe info */}
-            {selectedFoodItem.name}
+            <FoodItemInRecipe 
+            recipeItems={selectedRecipe.recipe_items} 
+            handleRemove={handleRecipeItemRemove} handleQtyChange={handleRecieItemQtyChange}
+            recipeName={selectedRecipe.name}
+            />
             </h1>
             }
 
@@ -260,6 +293,7 @@ const MealItemModal = ({
               <PrimaryBtn
               value={toUpdate ? 'Update' : 'Add'}
               type='submit'
+              disabled= {!toUpdate && !itemSelected && !recipeSelected}
               className='w-2/5 h-12'
               onClick={(e)=>handleCreate(e)}
               />

@@ -125,6 +125,7 @@ function SignUp() {
 
             <Input 
             label="Email" 
+            className="w-3/4"
             type='email' 
             value={email} 
             onFocus={()=> setEmailFocus(true)}

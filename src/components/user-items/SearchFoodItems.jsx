@@ -89,6 +89,7 @@ function SearchFoodItems({
             placeholder='Search items here'
             value={searchQuery}
             onChange={(e)=>{setSearchQuery(e.target.value)}}
+            onBlur={()=>{setTimeout(()=>(setItemSuggestions([])), 300)}}
             className='w-11/12 h-12 bg-lightwhite rounded-lg p-2 outline-none text-secondary border-2 border-secondary'/>
             {/* search suggestions */}
             {searchQuery &&
