@@ -107,9 +107,25 @@ export const weightApi = createApi({
             }
         }),
 
+        getWeightRecordsSummary: builder.query({
+            query: (range) => `get_from_last_x_days/${range}`,
+            providesTags: ['WeightRecords'],
+        
+            async onQueryStarted(arg, {dispatch, queryFulfilled}) {
+                try {
+                    console.log("init")
+                    const {data, meta} = await queryFulfilled;
+                    console.log("--xyz--", meta);
+                } catch (err) {
+                    console.log(err);
+                }
+            }
+        }),
+
+
     })
 })
 
 
 
-export const { useCreateWeightRecordMutation, useGetWeightRecordsQuery, useDeleteWeightRecordMutation, useUpdateWeightRecordMutation } = weightApi
+export const { useCreateWeightRecordMutation, useGetWeightRecordsQuery, useDeleteWeightRecordMutation, useUpdateWeightRecordMutation, useGetWeightRecordsSummaryQuery } = weightApi

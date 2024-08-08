@@ -40,7 +40,7 @@ const MealEditModal = ({
     }
   }
 
-  const [addMealLog, {isError:addError, isLoading:addLoading, isSuccess:addSuccess}] = useCreateMealLogMutation() 
+  const [addMealLog, {isError:addError, isLoading:addLoading, isSuccess:addSuccess, error:addErrorMsg}] = useCreateMealLogMutation() 
   const [updateMealLog, {isError:updateError, isLoading:updateLoading, isSuccess:updateSuccess}] = useUpdateMealLogMutation()
 
   const handleSubmit = async(e) => {
@@ -129,8 +129,8 @@ const MealEditModal = ({
   }
 
   return (
-    <div onClick={closeModal} ref={modalRef} className='fixed inset-0 min-h-screen bg-blcklight bg-opacity-30 backdrop-blur-sm z-40 flex justify-center items-center'>
-        <div className='w-10/12 lg:w-3/12 min-h-[50vh] bg-lightwhite border-secondary border-2 flex flex-col items-center justify-between rounded-3xl'>
+    <div onClick={closeModal} ref={modalRef} className='fixed inset-0 min-h-screen bg-blcklight bg-opacity-30 backdrop-blur-sm z-50 flex justify-center items-center'>
+        <div className='w-10/12 lg:w-3/12 min-h-[70vh] bg-lightwhite border-secondary border-2 flex flex-col items-center justify-between rounded-3xl'>
 
             <h1 className='text-white text-xl text-center font-medium bg-secondary rounded-t-2xl w-full h-16 pt-4'>
                 {toRename ? "Edit Meal" : "Create Meal"}
@@ -145,6 +145,7 @@ const MealEditModal = ({
             {(addError || updateError) && <div className='my-auto flex flex-col justify-center items-center gap-16'>
             <h1 className='text-secondary text-2xl font-medium my-auto'>
             Something went wrong!
+            {addErrorMsg && <h1 className='text-blackdark'>{addErrorMsg[0]}</h1>}
             </h1>
             <PrimaryBtn value='Ok' className='w-36 h-12' onClick={()=>(onClose())}/>
             </div>}

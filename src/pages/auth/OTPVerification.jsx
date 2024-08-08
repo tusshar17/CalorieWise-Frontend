@@ -82,7 +82,7 @@ function OTPVerification() {
               <img src={logoImage} className='lg:hidden w-60 h-auto absolute -top-20 left-16'/>
               
               <h1 className='text-secondary text-4xl font-semibold mx-auto mt-12 lg:mt-0 lg:mx-0 lg:mb-4'>Verify OTP</h1>
-              <h3 className='text-blcklight text-xl font-medium mx-auto mt-12 lg:mt-0 lg:mx-0 lg:mb-4'>OTP sent on {userEmail}</h3>
+              <h3 className='text-blcklight text-sm font-medium mx-auto mt-12 ml-2 lg:mt-0 lg:mx-0 lg:mb-4'>OTP sent on {userEmail}</h3>
 
               {errMsg && otp && <h3 className='text-blcklight text-xl font-medium mx-auto mt-4 lg:mt-0 lg:mx-0 lg:mb-4'>{errMsg}</h3>}
                   
@@ -90,6 +90,7 @@ function OTPVerification() {
     
                 <Input 
                 label="OTP" 
+                className='w-full lg:w-3/5' 
                 type='text' 
                 value={otp} 
                 onFocus={()=>setOtpFocus(true)}
@@ -98,15 +99,17 @@ function OTPVerification() {
                 <p className={!validOtp ? "text-blcklight text-sm pl-2" : "hidden"}>OTP should be of 4 digits.</p>
     
                 <PrimaryBtn 
-                className='mt-2' 
+                className='mt-2 w-full lg:w-3/5 h-12' 
                 type="submit" 
                 value='Verify OTP' 
                 disabled={!validOtp}/>
     
               </form>
     
-              <h2 className='text-blackdark mt-2 font-medium pl-2'>Didn't receive OTP?</h2>
-              <SecondaryBtn className='mt-0' value='Resend OTP'/>
+              <h2 className='text-blackdark mt-8 font-medium pl-2'>Didn't receive OTP?</h2>
+              <button className='pl-2'>
+                <h2 className='text-secondary text-lg font-medium underline'>Resend OTP</h2>
+              </button>
     
             </div>
             

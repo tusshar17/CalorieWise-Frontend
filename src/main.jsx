@@ -1,23 +1,36 @@
-import React from 'react'
+import React, {lazy, Suspense} from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App.jsx'
 import './index.css'
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import { store, persistor } from './app/store.js'
-import { ApiProvider } from '@reduxjs/toolkit/query/react'
 import { PersistGate } from 'redux-persist/integration/react'
-import { goalApi } from './services/goalService.js'
-import SignUp from "./pages/auth/SignUp.jsx"
-import LogIn from './pages/auth/LogIn.jsx'
-import OTPVerification from './pages/auth/OTPVerification.jsx'
-import Layout from './components/Layout.jsx'
-import GoalSetting from './pages/goal_setting/GoalSetting.jsx'
-import HomePage from './pages/home/HomePage.jsx'
-import Diary from './pages/diary/Diary.jsx'
-import UserItems from './pages/useritems/UserItems.jsx'
-import WeightPage from './pages/weight/WeightPage.jsx'
-import Profile from './pages/profile/Profile.jsx'
+import { ErrorBoundary } from 'react-error-boundary'
+import Loader from './components/Loader.jsx'
+
+// import SignUp from "./pages/auth/SignUp.jsx"
+// import LogIn from './pages/auth/LogIn.jsx'
+// import OTPVerification from './pages/auth/OTPVerification.jsx'
+// import GoalSetting from './pages/goal_setting/GoalSetting.jsx'
+// import HomePage from './pages/home/HomePage.jsx'
+// import Diary from './pages/diary/Diary.jsx'
+// import UserItems from './pages/useritems/UserItems.jsx'
+// import WeightPage from './pages/weight/WeightPage.jsx'
+// import Profile from './pages/profile/Profile.jsx'
+import Layout from './components/Layout.jsx' //
+import ErrorFallBack from './components/ErrorBoundary.jsx'
+
+// const Layout = lazy(()=>import('./components/Layout.jsx'))
+const SignUp = lazy(()=>import("./pages/auth/SignUp.jsx"))
+const LogIn = lazy(()=>import('./pages/auth/LogIn.jsx'))
+const OTPVerification = lazy(()=>import('./pages/auth/OTPVerification.jsx'))
+const GoalSetting = lazy(()=>import('./pages/goal_setting/GoalSetting.jsx'))
+const HomePage = lazy(()=>import('./pages/home/HomePage.jsx'))
+const Diary = lazy(()=>import('./pages/diary/Diary.jsx'))
+const UserItems = lazy(()=>import('./pages/useritems/UserItems.jsx'))
+const WeightPage = lazy(()=>import('./pages/weight/WeightPage.jsx'))
+const Profile = lazy(()=>import('./pages/profile/Profile.jsx'))
+
 
 
 
@@ -28,39 +41,39 @@ const router = createBrowserRouter([
     children: [
       {
         path: "",
-        element: <HomePage/>
+        element: <Suspense fallback={<Loader/>}> <HomePage/> </Suspense>
       },
       {
         path: "signup",
-        element: <SignUp/>
+        element: <Suspense fallback={<Loader/>}> <SignUp/> </Suspense>
       },
       {
         path: "login",
-        element: <LogIn/>
+        element: <Suspense fallback={<Loader/>}> <LogIn/> </Suspense>
       },
       {
         path: "otpverification",
-        element: <OTPVerification/>
+        element: <Suspense fallback={<Loader/>}> <OTPVerification/> </Suspense>
       },
       {
         path: "goal-setting",
-        element: <GoalSetting/>
+        element: <Suspense fallback={<Loader/>}> <GoalSetting/> </Suspense>
       },
       {
         path: "diary",
-        element: <Diary/>
+        element: <Suspense fallback={<Loader/>}> <Diary/> </Suspense>
       },
       {
         path: "my-items",
-        element: <UserItems/>
+        element: <Suspense fallback={<Loader/>}> <UserItems/> </Suspense>
       },
       {
         path: "weight",
-        element: <WeightPage/>
+        element: <Suspense fallback={<Loader/>}> <WeightPage/> </Suspense>
       },
       {
         path: "profile",
-        element: <Profile/>
+        element: <Suspense fallback={<Loader/>}> <Profile/> </Suspense>
       }
     ]
   }
@@ -73,7 +86,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <RouterProvider router={router}/>
+        <ErrorBoundary FallbackComponent={ErrorFallBack} onReset={()=>{}}>
+          <RouterProvider router={router} fallbackElement={<Loader/>}/>
+        </ErrorBoundary>
       </PersistGate>
     </Provider>
   </React.StrictMode>,

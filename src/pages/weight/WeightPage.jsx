@@ -37,7 +37,7 @@ const WeightPage = () => {
               {/* <WeightProgressPie currentWeight={weightRecords[0].weight}/> */}
 
               {/* weight graph */}
-              <InsightGraph label='Weight' borderColor='border-secondary' shadow='' className='lg:min-w-[25vw]'/>
+              <InsightGraph label='Weight' borderColor='border-secondary' shadow='' className='lg:min-w-[25vw]' entity={'weight'}/>
             </div>
 
           {/* add weight button */}

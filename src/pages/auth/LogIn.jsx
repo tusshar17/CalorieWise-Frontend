@@ -121,12 +121,13 @@ function SignUp() {
 
           <p ref={errRef} className={errMsg ? "text-blcklight text-lg" : "hidden"}>{errMsg}</p>
           
-          <form onSubmit={handleSubmit} className='w-full flex flex-col gap-2'>
+          <form onSubmit={handleSubmit} className='w-full flex flex-col gap-4'>
 
             <Input 
             label="Email" 
-            className="w-3/4"
-            type='email' 
+            className="w-full lg:w-3/5"
+            type='email'
+            placeholder='joe@email.com' 
             value={email} 
             onFocus={()=> setEmailFocus(true)}
             onBlur={()=> setEmailFocus(false)}
@@ -135,17 +136,25 @@ function SignUp() {
 
             
             <Input 
-            label="Password" 
+            label="Password"
+            className="w-full lg:w-3/5"
             type='password' 
             value={pwd} 
             onFocus={()=> setPwdFocus(true)}
             onBlur={()=> setPwdFocus(false)}
             onChange={(e)=>{setPwd(e.target.value)}}/>
-            <p className={pwdFocus && !validPwd ? "text-blcklight text-sm pl-2" : "hidden"}>can contain alphabets, numbers and special characters, minimum 6 characters</p>
+            <ul className={pwdFocus && !validPwd ? "text-blcklight text-sm font-medium pl-2 list-disc" : "hidden"}>
+              <li>
+              can contain alphabets, numbers and special characters
+              </li>
+              <li>
+              minimum 6 characters
+              </li>
+            </ul>
 
             
             <PrimaryBtn 
-            className='mt-2 h-12 w-full lg:w-3/4' 
+            className='mt-2 h-12 w-full lg:w-3/5' 
             isLoading={isLoading}
             type="submit" 
             value='Log In' 
@@ -154,7 +163,10 @@ function SignUp() {
           </form>
 
           <h2 className='text-secondary mt-2 font-normal pl-2'>Don't have an account?</h2>
-          <SecondaryBtn className='mt-0' value='Sign Up' onClick={()=>{navigate('/signup')}}/>
+          <SecondaryBtn 
+          className='mt-0 h-12 w-full lg:w-3/5' 
+          value='Sign Up' 
+          onClick={()=>{navigate('/signup')}}/>
 
         </div>
         

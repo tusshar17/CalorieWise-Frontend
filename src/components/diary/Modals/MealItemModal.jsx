@@ -238,7 +238,7 @@ const MealItemModal = ({
         onClick2 = {clickRecipesTab}
         className='w-full h-20 lg:w-11/12 lg:mt-4'/>}
 
-        <div className='w-full min-h-[70vh] px-8 py-8 flex flex-col justify-between'>
+        <div className='w-full min-h-[70vh] max-h-[70vh] px-8 py-8 flex flex-col justify-between'>
           {/* search bar and search suggestions */}
           {(!toUpdate && (!createNewLogError && !createNewLogLoading && !createNewLogSuccess)) && 
           <div className='w-full flex flex-col'>

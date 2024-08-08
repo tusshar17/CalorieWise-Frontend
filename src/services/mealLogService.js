@@ -102,9 +102,24 @@ export const mealLogApi = createApi({
             }
         }),
 
+        getMacroSummary: builder.query({
+            query: (range) => (`get_macro_summary/${range}`),
+            providesTags: ['MealLogs'],
+        
+            async onQueryStarted(arg, {dispatch, queryFulfilled}) {
+                try {
+                    console.log("init")
+                    const {data, meta} = await queryFulfilled;
+                    console.log("--xyz--", meta);
+                } catch (err) {
+                    console.log(err);
+                }
+            }
+        }),
+
     })
 })
 
 
 
-export const { useGetMealLogsQuery, useCreateMealLogMutation, useUpdateMealLogMutation } = mealLogApi
+export const { useGetMealLogsQuery, useCreateMealLogMutation, useUpdateMealLogMutation, useGetMacroSummaryQuery } = mealLogApi

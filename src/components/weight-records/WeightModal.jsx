@@ -81,7 +81,7 @@ const WeightModal = ({
 
   return (
     <div ref={weightModalRef} onClick={closeModal} className='fixed inset-0 min-h-screen bg-blcklight bg-opacity-30 backdrop-blur-sm z-50 flex justify-center items-center'>
-        <div className='w-10/12 lg:w-3/12 min-h-[50vh] bg-lightwhite border-secondary border-2 flex flex-col items-center justify-between rounded-3xl'>
+        <div className='w-10/12 lg:w-3/12 min-h-[70vh] bg-lightwhite border-secondary border-2 flex flex-col items-center justify-between rounded-3xl'>
         
             <h1 className='text-white text-xl text-center font-medium bg-secondary rounded-t-2xl w-full h-16 pt-4'>
                 {toUpdate ? "Update Weight" : "Add Weight"}
