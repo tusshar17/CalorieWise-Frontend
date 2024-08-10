@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # Unique key of the Deployment instance
+  name: cw-frontend
+spec:
+  # 3 Pods should exist at all times.
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cal-wise-front
+  template:
+    metadata:
+      labels:
+        # Apply this label to pods and default
+        # the Deployment label selector to this value
+        app: cal-wise-front
+    spec:
+      containers:
+      - name: frontend-container
+        # Run this image
+        image: tusshar17/claorie-wise-frontend:08
+        ports:
+        - containerPort: 80
+        env:
+          - name: API_URL
+            value: "service-cw-backend"

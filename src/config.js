@@ -1,1 +1,1 @@
-export let backend = "http://192.168.29.181:8000"
+export let backend = "http://65.2.171.212:8000"
