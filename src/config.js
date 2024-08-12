@@ -1,1 +1,1 @@
-export let backend = "http://13.201.227.222:8000"
+export let backend = "http://api.caloriewise.life"
