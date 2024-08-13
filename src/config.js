@@ -1,1 +1,1 @@
-export let backend = "http://api.caloriewise.life"
+export let backend = "https://api.caloriewise.life"
