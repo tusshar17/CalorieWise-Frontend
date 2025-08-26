@@ -1,1 +1,1 @@
-export let backend = "https://api.caloriewise.life"
+export let backend = "https://caloriewise-backend-jc9a.onrender.com"
